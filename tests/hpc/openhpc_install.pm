@@ -19,12 +19,6 @@ use testapi;
 
 sub run() {
 
-    my $repo = get_required_var("OPENHPC_REPO");
-
-    select_console('root-console');
-
-    assert_script_run "zypper -n addrepo -f $repo openhpc";
-    assert_script_run "zypper -n  --gpg-auto-import-keys ref";
     assert_script_run "systemctl disable SuSEfirewall2";
     assert_script_run "systemctl stop SuSEfirewall2";
     assert_script_run "zypper -n install -t pattern ohpc-base ohpc-warewulf";
@@ -32,3 +26,4 @@ sub run() {
 }
 
 1;
+# vim: set sw=4 et:

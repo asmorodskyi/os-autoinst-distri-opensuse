@@ -1235,6 +1235,30 @@ elsif (ssh_key_import) {
     # verify previous defined ssh keys
     loadtest "x11/ssh_key_verify";
 }
+elsif (get_var("HPC")) {
+
+    if (check_var("HPC", "support")) {
+        loadtest "hpc/barrier_init";
+        loadtest "hpc/hpc_support_server";
+    }
+    else {
+        loadtest "boot/boot_to_desktop";
+        loadtest "console/consoletest_setup";
+        loadtest "hpc/hpc_init";
+
+        if (check_var("HPC", "basic")) {
+            loadtest "hpc/rasdaemon";
+        }
+
+        if (check_var("HPC", "openhpc")) {
+            loadtest "hpc/openhpc_install";
+        }
+
+        if (check_var("HPC", "munge")) {
+            loadtest "hpc/munge";
+        }
+    }
+}
 else {
     if (get_var("AUTOYAST") || get_var("AUTOUPGRADE")) {
         load_boot_tests();
@@ -1356,14 +1380,5 @@ if (get_var("TCM") || check_var("ADDONS", "tcm")) {
     }
 }
 
-if (check_var("HPC", "basic")) {
-    loadtest "hpc/install";
-    loadtest "hpc/cpuid";
-    loadtest "hpc/rasdaemon";
-}
-
-if (check_var("HPC", "master")) {
-    loadtest "hpc/masterinstall";
-}
 1;
 # vim: set sw=4 et:
