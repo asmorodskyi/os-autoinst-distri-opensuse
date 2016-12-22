@@ -16,11 +16,34 @@ use testapi;
 use lockapi;
 use mmapi;
 
+sub check_for_service_status {
+    my $cmd = shift;
+    for (1 .. 7) {
+        my $res = script_run $cmd;
+        last if !$res;
+        wait_idle(5);
+    }
+    #TODO find a proper way to die here if it was not successful
+    
+}
+
+
 sub run() {    
     assert_screen "tty1-selected", 600;
     type_string "root\n";
     assert_screen "password-prompt";
     type_string "susetesting\n";
+
+    # Check if eth0 has got an ipv4 address
+    check_for_service_status("systemctl status wicked | grep 'eth0.*up'");
+    
+    # TODO find proper supportserver image
+    # for now, change forwarders file 
+    script_run("sed -i '/^forwarders.*/a     10.160.2.88;' /etc/named.d/forwarders.conf");
+    script_run("cat /etc/named.d/forwarders.conf");
+    script_run("systemctl restart named");
+    check_for_service_status("systemctl status named | grep 'running'");
+
     type_string "ip a\n";
     type_string "ip route\n";
     type_string "if `ip a | grep -q '172.16.0.1/28'`; then echo ip1_okay > /dev/$serialdev; fi\n";
@@ -32,6 +55,7 @@ sub run() {
     type_string "if `dig \@localhost srv1.bravo.ha-test.qa.suse.de +short | grep -q 172.16.0.17`; then echo dns2_okay > /dev/$serialdev; fi\n";
     wait_serial("dns2_okay") || die "support server cannot resolve DNS2";
     type_string "exit\n";
+    barrier_wait("NETWORK_READY");
     wait_for_children;    #don't destroy support server while children are running
 }
 

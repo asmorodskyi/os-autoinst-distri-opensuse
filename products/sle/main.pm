@@ -1243,7 +1243,6 @@ elsif (get_var("HPC")) {
     }
     else {
         loadtest "boot/boot_to_desktop";
-        loadtest "console/consoletest_setup";
         loadtest "hpc/hpc_init";
 
         if (check_var("HPC", "basic")) {
