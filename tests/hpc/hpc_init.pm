@@ -8,7 +8,7 @@
 # without any warranty.
 
 # Summary: prepare environment for HPC module testing
-# Maintainer: asmorodskyi <asmorodskyi@suse.com>
+# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com>
 
 use base "opensusebasetest";
 use strict;
@@ -20,11 +20,11 @@ use lockapi;
 sub run() {
   barrier_wait("NODES_STARTED");
   barrier_wait("NETWORK_READY");
-  # hpc channels  
+  # hpc channels
   my $repo     = get_required_var('HPC_REPO');
   my $reponame = "SLE-Module-HPC";
   select_console('root-console');
-  script_run "systemctl stop SuSEfirewall2";
+  assert_script_run "systemctl stop SuSEfirewall2";
   pkcon_quit();
   assert_script_run "zypper ar -f $repo $reponame";
   if(my $openhpc_repo = get_var("OPENHPC_REPO")) {

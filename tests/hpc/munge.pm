@@ -9,13 +9,12 @@
 
 # Summary: Installation of munge package from HPC module and sanity check 
 # of this package
-# Maintainer: asmorodskyi <asmorodskyi@suse.com>
+# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com> 
 
 use base "opensusebasetest";
 use strict;
 use warnings;
 use testapi;
-use utils;
 
 sub run() {
   assert_script_run "zypper -n in munge libmunge2";

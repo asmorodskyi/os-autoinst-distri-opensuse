@@ -8,11 +8,10 @@
 # without any warranty.
 
 # Summary: Initialize barriers used in HA cluster tests
-# Maintainer: Denis Zyuzin <dzyuzin@suse.com>
+# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com> 
 
-use base "hacluster";
+use base "opensusebasetest";;
 use strict;
-use testapi;
 use lockapi;
 use mmapi;
 
@@ -28,3 +27,4 @@ sub test_flags {
 }
 
 1;
+# vim: set sw=4 et:

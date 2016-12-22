@@ -7,8 +7,9 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
+#TODO need to merge this with HA support server
 # Summary: Start HA support server and check network connectivity
-# Maintainer: Denis Zyuzin <dzyuzin@suse.com>
+# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com>
 
 use base "basetest";
 use strict;
@@ -24,7 +25,6 @@ sub check_for_service_status {
         wait_idle(5);
     }
     #TODO find a proper way to die here if it was not successful
-    
 }
 
 
