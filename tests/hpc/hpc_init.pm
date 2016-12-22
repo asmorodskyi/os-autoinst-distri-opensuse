@@ -15,13 +15,16 @@ use strict;
 use warnings;
 use testapi;
 use utils;
+use lockapi;
 
 sub run() {
-  barrier_wait("START_HPC");
+  barrier_wait("NODES_STARTED");
+  barrier_wait("NETWORK_READY");
   # hpc channels  
   my $repo     = get_required_var('HPC_REPO');
   my $reponame = "SLE-Module-HPC";
   select_console('root-console');
+  script_run "systemctl stop SuSEfirewall2";
   pkcon_quit();
   assert_script_run "zypper ar -f $repo $reponame";
   if(my $openhpc_repo = get_var("OPENHPC_REPO")) {
