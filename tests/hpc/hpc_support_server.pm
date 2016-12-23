@@ -25,6 +25,7 @@ sub check_for_service_status {
         wait_idle(5);
     }
     #TODO find a proper way to die here if it was not successful
+  }
 
 sub run() {
     assert_screen "tty1-selected", 600;
