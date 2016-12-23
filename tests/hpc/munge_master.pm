@@ -23,7 +23,7 @@ sub run() {
 
     assert_script_run "zypper -n in munge libmunge2";
     barrier_wait "MUNGE_INSTALLED";
-    assert_script_run "scp /etc/munge/munge.key root@mmunge-slave:/etc/munge/munge.key";
+    assert_script_run 'scp /etc/munge/munge.key root@mmunge-slave:/etc/munge/munge.key';
     barrier_wait "MUNGE_KEY_COPY";
     assert_script_run "systemctl enable munge.service";
     assert_script_run "systemctl start munge.service";
