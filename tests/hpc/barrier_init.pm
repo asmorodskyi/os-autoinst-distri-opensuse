@@ -16,8 +16,11 @@ use lockapi;
 use mmapi;
 
 sub run() {
-    barrier_create("NODES_STARTED", 3);
-    barrier_create("NETWORK_READY", 3);
+
+    barrier_create("SLURMCTLD_STARTED", 2);
+    barrier_create("SLURMD_STARTED",    2);
+    barrier_create("NODES_STARTED",     3);
+    barrier_create("NETWORK_READY",     3);
     wait_for_children_to_start;
     barrier_wait("NODES_STARTED");
 }
