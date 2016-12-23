@@ -9,7 +9,7 @@
 
 # Summary: Installation of munge package from HPC module and sanity check
 # of this package
-# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com> 
+# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com>
 
 use base "opensusebasetest";
 use strict;
@@ -17,10 +17,20 @@ use warnings;
 use testapi;
 
 sub run() {
+    # set proper hostname
+    assert_script_run "hostnamectl set-hostname munge-master";
+
     assert_script_run "zypper -n in munge libmunge2";
+    barrier_wait "MUNGE_INSTALLED";
+    assert_script_run "scp /etc/munge/munge.key root@mmunge-slave:/etc/munge/munge.key";
+    barrier_wait "MUNGE_KEY_COPY";
     assert_script_run "systemctl enable munge.service";
     assert_script_run "systemctl start munge.service";
-    script_run "hostname";
+    barrier_wait "MUNGE_SERVICE_START";
+    assert_script_run "munge -n";
+    assert_script_run "munge -n | unmunge";
+    assert_script_run "munge -n | ssh HostB unmunge";
+    assert_script_run "remunge";
 }
 
 1;
