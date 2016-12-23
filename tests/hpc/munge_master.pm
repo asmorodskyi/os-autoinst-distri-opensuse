@@ -18,6 +18,9 @@ use testapi;
 
 sub run() {
     assert_script_run "zypper -n in munge libmunge2";
+    assert_script_run "systemctl enable munge.service";
+    assert_script_run "systemctl start munge.service";
+    script_run "hostname";
 }
 
 1;

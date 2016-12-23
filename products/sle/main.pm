@@ -1236,7 +1236,6 @@ elsif (ssh_key_import) {
     loadtest "x11/ssh_key_verify";
 }
 elsif (get_var("HPC")) {
-
     if (check_var("HPC", "support")) {
         loadtest "hpc/barrier_init";
         loadtest "hpc/hpc_support_server";
@@ -1248,15 +1247,12 @@ elsif (get_var("HPC")) {
         if (check_var("HPC", "basic")) {
             loadtest "hpc/rasdaemon";
         }
-
         if (check_var("HPC", "openhpc")) {
             loadtest "hpc/openhpc_install";
         }
-
         if (check_var("HPC", "munge")) {
             loadtest "hpc/munge";
         }
-
         if (check_var("HPC", "slurm_master")) {
             loadtest "hpc/install_slurm";
             loadtest "hpc/slurm_master";
@@ -1265,7 +1261,6 @@ elsif (get_var("HPC")) {
             loadtest "hpc/install_slurm";
             loadtest "hpc/slurm_slave";
         }
-
     }
 }
 else {
