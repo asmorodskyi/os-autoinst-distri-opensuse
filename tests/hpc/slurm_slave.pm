@@ -9,7 +9,7 @@
 # without any warranty.
 
 # Summary: HPC_Module: slurm slave
-#    This test is setting up a slurm slave and tests if the daemon can start 
+#    This test is setting up a slurm slave and tests if the daemon can start
 # Maintainer: soulofdestiny <mgriessmeier@suse.com>
 
 use base "opensusebasetest";

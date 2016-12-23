@@ -7,7 +7,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# Summary: Installation of munge package from HPC module and sanity check 
+# Summary: Installation of munge package from HPC module and sanity check
 # of this package
 # Maintainer: asmorodskyi <asmorodskyi@suse.com>
 
@@ -18,7 +18,7 @@ use testapi;
 use utils;
 
 sub run() {
-  assert_script_run "zypper -n in munge libmunge2";
+    assert_script_run "zypper -n in munge libmunge2";
 }
 
 1;
