@@ -1256,6 +1256,16 @@ elsif (get_var("HPC")) {
         if (check_var("HPC", "munge")) {
             loadtest "hpc/munge";
         }
+
+        if (check_var("HPC", "slurm_master")) {
+            loadtest "hpc/install_slurm";
+            loadtest "hpc/slurm_master";
+        }
+        if (check_var("HPC", "slurm_slave")) {
+            loadtest "hpc/install_slurm";
+            loadtest "hpc/slurm_slave";
+        }
+
     }
 }
 else {
