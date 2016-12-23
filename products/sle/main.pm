@@ -1250,8 +1250,11 @@ elsif (get_var("HPC")) {
         if (check_var("HPC", "openhpc")) {
             loadtest "hpc/openhpc_install";
         }
-        if (check_var("HPC", "munge")) {
-            loadtest "hpc/munge";
+        if (check_var("HPC", "munge_master")) {
+            loadtest "hpc/munge_master";
+        }
+        if (check_var("HPC", "munge_slave")) {
+            loadtest "hpc/munge_slave";
         }
         if (check_var("HPC", "slurm_master")) {
             loadtest "hpc/install_slurm";
