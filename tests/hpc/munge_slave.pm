@@ -20,6 +20,7 @@ use lockapi;
 sub run() {
     # set proper hostname
     assert_script_run "hostnamectl set-hostname munge-slave";
+    script_run "ifconfig";
 
     assert_script_run "zypper -n in munge libmunge2";
     barrier_wait "MUNGE_INSTALLED";
