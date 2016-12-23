@@ -24,11 +24,11 @@ sub check_for_service_status {
         wait_idle(5);
     }
     #TODO find a proper way to die here if it was not successful
-    
+
 }
 
 
-sub run() {    
+sub run() {
     assert_screen "tty1-selected", 600;
     type_string "root\n";
     assert_screen "password-prompt";
@@ -36,9 +36,9 @@ sub run() {
 
     # Check if eth0 has got an ipv4 address
     check_for_service_status("systemctl status wicked | grep 'eth0.*up'");
-    
+
     # TODO find proper supportserver image
-    # for now, change forwarders file 
+    # for now, change forwarders file
     script_run("sed -i '/^forwarders.*/a     10.160.2.88;' /etc/named.d/forwarders.conf");
     script_run("cat /etc/named.d/forwarders.conf");
     script_run("systemctl restart named");
