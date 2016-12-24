@@ -13,35 +13,21 @@
 #    beginning of HPC testing
 #    It only adds the repo and installs the four important packages to check if there are any
 #    dependency issues
-# Maintainer: soulofdestiny <mgriessmeier@suse.com>
+# Maintainer: Anton Smorodskyi <asmorodskyi@suse.com>, soulofdestiny <mgriessmeier@suse.com>
 
 use base "opensusebasetest";
 use strict;
 use testapi;
+use utils;
 
 sub run() {
-    my $self = shift;
-
     select_console('root-console');
 
-    # disable packagekitd
-    script_run 'systemctl mask packagekit.service';
-    script_run 'systemctl stop packagekit.service';
-    # hpc channels
-    my $arch     = get_var('ARCH');
-    my $repo     = get_required_var('REPO_1');
-    my $reponame = "SLE-Module-HPC12";
-    assert_script_run "zypper ar -f $repo $reponame";
-    assert_script_run "zypper -n in cpuid rasdaemon memkind hwloc";
+    pkcon_quit();
+    # install slurm
+    assert_script_run "zypper -n in slurm-munge";
     assert_script_run 'zypper -n up';
-    # reboot when running processes use deleted files after packages update
-    type_string "zypper ps|grep 'PPID' || echo OK | tee /dev/$serialdev\n";
-    if (!wait_serial("OK", 100)) {
-        type_string "shutdown -r now\n";
-        $self->wait_boot;
-        select_console('root-console');
-    }
-    save_screenshot;
+
 }
 
 sub test_flags() {
