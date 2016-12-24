@@ -8,6 +8,7 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
+#FIXME Maintainer
 # Summary: HPC_Module: standard installation
 #    This test is as simple as it can be at the moment, since we are at the very
 #    beginning of HPC testing
@@ -27,21 +28,10 @@ sub run() {
     # disable packagekitd
     script_run 'systemctl mask packagekit.service';
     script_run 'systemctl stop packagekit.service';
-    # hpc channels
-    my $arch     = get_var('ARCH');
-    my $repo     = get_required_var('REPO_1');
-    my $reponame = "SLE-Module-HPC12";
-    assert_script_run "zypper ar -f $repo $reponame";
-    assert_script_run "zypper -n in cpuid rasdaemon memkind hwloc";
+    # install slurm
+    assert_script_run "zypper -n in slurm-munge";
     assert_script_run 'zypper -n up';
-    # reboot when running processes use deleted files after packages update
-    type_string "zypper ps|grep 'PPID' || echo OK | tee /dev/$serialdev\n";
-    if (!wait_serial("OK", 100)) {
-        type_string "shutdown -r now\n";
-        $self->wait_boot;
-        select_console('root-console');
-    }
-    save_screenshot;
+
 }
 
 sub test_flags() {
