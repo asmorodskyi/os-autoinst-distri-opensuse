@@ -24,7 +24,7 @@ use version_utils;
 use Mojo::Util 'trim';
 
 our @EXPORT = qw(test_seccomp basic_container_tests container_set_up get_vars build_img test_built_img can_build_sle_base
-  check_docker_firewall get_docker_version check_runtime_version container_ip registry_url);
+  check_docker_firewall get_docker_version container_ip registry_url);
 
 sub test_seccomp {
     my $no_seccomp = script_run('docker info | tee /tmp/docker_info.txt | grep seccomp');
@@ -44,12 +44,12 @@ sub test_seccomp {
 }
 
 sub check_docker_firewall {
+    systemctl('is-active firewalld');
     my $container_name = 'sut_container';
     my $running        = script_output qq(docker ps -a -q | wc -l);
     validate_script_output('ip a s docker0', sub { /state DOWN/ }) if $running != 0;
     assert_script_run "firewall-cmd --list-all --zone=docker";
     validate_script_output "firewall-cmd --list-interfaces --zone=docker",  sub { /docker0/ };
-    validate_script_output "firewall-cmd --list-interfaces --zone=trusted", sub { /^\s*$/ };
     # Rules applied before DOCKER. Default is to listen to all tcp connections
     # ex. output: "1           0        0 RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0"
     validate_script_output "iptables -L DOCKER-USER -nvx --line-numbers", sub { /1.+all.+0\.0\.0\.0\/0\s+0\.0\.0\.0\/0/ };
@@ -67,15 +67,10 @@ sub get_docker_version {
     return $v =~ /(\d{2}\.\d{2})/;
 }
 
-sub check_runtime_version {
-    my ($current, $other) = @_;
-    return check_version($other, $current, qr/\d{2}(?:\.\d+)/);
-}
-
 sub container_ip {
     my ($container, $runtime) = @_;
     my $ip = script_output "$runtime inspect $container --format='{{.NetworkSettings.IPAddress}}'";
-    record_info "$ip";
+    record_info "container IP", "$ip";
     return $ip;
 }
 
