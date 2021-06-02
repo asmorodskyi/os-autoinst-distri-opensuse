@@ -86,8 +86,15 @@
             <package>gcc</package>
             <package>sudo</package>
             <package>wget</package>
-            <package>python</package>
+            <package>python3</package>
             <package>haveged</package>
+	    <package>iputils</package>
+	    <package>vim</package>
+	    <package>python3-pip</package>
+	    <package>python3-devel</package>
+	    <package>python3-virtualenv</package>
+	    <package>python3-img-proof</package>
+	    <package>python3-img-proof-tests</package>
         </packages>
     </software>
     <scripts>

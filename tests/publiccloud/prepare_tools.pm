@@ -58,14 +58,6 @@ sub run {
 
     $self->select_serial_terminal;
 
-    if (my $tools_repo = get_var('PUBLIC_CLOUD_TOOLS_REPO')) {
-        for my $repo (split(/\s+/, $tools_repo)) {
-            zypper_call('ar ' . $repo);
-        }
-    }
-
-    # Install prerequesite packages test
-    zypper_call('-q in python3-pip python3-devel python3-virtualenv python3-img-proof python3-img-proof-tests');
     record_info('python', script_output('python --version'));
 
     # Install AWS cli
