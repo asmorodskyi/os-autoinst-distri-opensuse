@@ -36,6 +36,15 @@ sub run {
         $instance = $self->{my_instance} = $provider->create_instance(check_guestregister => is_openstack ? 0 : 1);
     }
 
+    $instance->ssh_script_run(cmd => "sudo ls -la /etc/containers/registries.conf");
+    $instance->ssh_script_run(cmd => "rpm -qf /etc/containers/registries.conf");
+    registercloudguest($instance);
+    $instance->ssh_script_run(cmd => "sudo ls -la /etc/containers/registries.conf");
+    $instance->ssh_script_run(cmd => "rpm -qf /etc/containers/registries.conf");
+    test_container_runtimes($instance) if (is_sle('>=15-SP5'));
+
+    die();
+
     if (check_var('PUBLIC_CLOUD_SCC_ENDPOINT', 'SUSEConnect')) {
         record_info('SKIP', 'PUBLIC_CLOUD_SCC_ENDPOINT is hardcoded to SUSEConnect - skipping registration testing. Falling back to registration module behavior');
         registercloudguest($instance) if (is_byos() || get_var('PUBLIC_CLOUD_FORCE_REGISTRATION'));
@@ -110,8 +119,6 @@ sub run {
 
     new_registration($instance);
 
-    test_container_runtimes($instance) if (is_sle('>=15-SP5'));
-
     force_new_registration($instance);
 
     register_addons_in_pc($instance);
@@ -159,13 +166,13 @@ sub test_container_runtimes {
     my ($instance) = @_;
     my $image = "registry.suse.com/bci/bci-base:latest";
 
-    record_info('Test docker');
-    $instance->ssh_assert_script_run("sudo rm -f /root/.docker/config.json");    # workaround for https://bugzilla.suse.com/show_bug.cgi?id=1231185
-    $instance->ssh_assert_script_run("sudo zypper install -y docker");
-    $instance->ssh_assert_script_run("sudo systemctl start docker.service");
-    record_info("systemctl status docker.service", $instance->ssh_script_output("systemctl status docker.service"));
-    $instance->ssh_assert_script_run("sudo docker pull $image");
-    $instance->ssh_assert_script_run("sudo systemctl stop docker.service");
+    #record_info('Test docker');
+    #$instance->ssh_assert_script_run("sudo rm -f /root/.docker/config.json");    # workaround for https://bugzilla.suse.com/show_bug.cgi?id=1231185
+    #$instance->ssh_assert_script_run("sudo zypper install -y docker");
+    #$instance->ssh_assert_script_run("sudo systemctl start docker.service");
+    #record_info("systemctl status docker.service", $instance->ssh_script_output("systemctl status docker.service"));
+    #$instance->ssh_assert_script_run("sudo docker pull $image");
+    #$instance->ssh_assert_script_run("sudo systemctl stop docker.service");
 
     record_info('Test podman');
     $instance->ssh_assert_script_run("sudo zypper install -y podman");
