@@ -20,14 +20,13 @@ use publiccloud::utils;
 use publiccloud::ssh_interactive "select_host_console";
 
 sub run {
-    my ($self, $args) = @_;
+    my ($self) = @_;
 
-    $self->{instance} = $args->{my_instance};
 
     select_host_console();    # select console on the host, not the PC instance
 
-    registercloudguest($args->{my_instance}) if (is_byos() || get_var('PUBLIC_CLOUD_FORCE_REGISTRATION'));
-    register_addons_in_pc($args->{my_instance});
+    registercloudguest($self->{my_instance}) if (is_byos() || get_var('PUBLIC_CLOUD_FORCE_REGISTRATION'));
+    register_addons_in_pc($self->{my_instance});
     # Since SLE 15 SP6 CHOST images don't have curl and we need it for testing
     if (is_sle('>15-SP5') && is_container_host()) {
         $self->{instance}->ssh_assert_script_run('sudo zypper -n in --force-resolution -y curl');

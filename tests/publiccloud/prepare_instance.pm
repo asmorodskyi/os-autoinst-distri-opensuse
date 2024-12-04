@@ -17,7 +17,7 @@ use utils;
 use publiccloud::utils;
 
 sub run {
-    my ($self, $args) = @_;
+    my ($self) = @_;
 
     # If someone schedules a publiccloud run with a custom SCHEDULE this causes
     # the test to break, because we need to pass $args, so dying earlier and with clear message about root cause
@@ -37,10 +37,10 @@ sub run {
     my %instance_args;
     $instance_args{check_connectivity} = 1;
     $instance_args{use_extra_disk} = {size => $additional_disk_size, type => $additional_disk_type} if ($additional_disk_size > 0);
-    $args->{my_provider} = $self->provider_factory();
-    $args->{my_instance} = $args->{my_provider}->create_instance(%instance_args);
-    my $provider = $args->{my_provider};
-    my $instance = $args->{my_instance};
+    $self->{my_provider} = $self->provider_factory();
+    $self->{my_instance} = $self->{my_provider}->create_instance(%instance_args);
+    my $provider = $self->{my_provider};
+    my $instance = $self->{my_instance};
 
     $instance->network_speed_test();
     $instance->check_cloudinit() if (is_cloudinit_supported);
