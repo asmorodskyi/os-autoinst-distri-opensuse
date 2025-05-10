@@ -17,9 +17,32 @@ use testapi;
 use Utils::Architectures;
 use Utils::Backends;
 use version_utils qw(is_upgrade is_sles4sap is_sle is_sle_micro);
+use Data::Dumper;
+use LTP::WhiteList;
 
 sub run {
     my ($self) = @_;
+    my $ltp_command = get_var('LTP_COMMAND_FILE', 'publiccloud');
+    my @commands = split(/\s+/, $ltp_command);
+    my $whitelist = LTP::WhiteList->new(get_var('LTP_KNOWN_ISSUES', ''));
+    my @skipped;
+    my $environment = {
+        product => get_required_var('DISTRI') . ':' . get_required_var('VERSION'),
+        revision => get_required_var('BUILD'),
+        arch => get_var('PUBLIC_CLOUD_ARCH', get_required_var("ARCH")),
+        kernel => '5.14.21-150400.24.164-default',
+        backend => get_required_var('BACKEND'),
+        flavor => get_required_var('FLAVOR'),
+        ltp_version => '20250130',
+        gcc => '',
+        libc => '',
+        harness => 'SUSE OpenQA',
+    };
+    foreach my $command (@commands) {
+        my @skipped_for_command = $whitelist->list_skipped_tests($environment, $command);
+        record_info('DEBUG3', $command);
+        push @skipped, @skipped_for_command;
+    }
     $self->{in_boot_desktop} = 1;
     # We have tests that boot from HDD and wait for DVD boot menu's timeout, so
     # the timeout here must cover it. UEFI DVD adds some 60 seconds on top.

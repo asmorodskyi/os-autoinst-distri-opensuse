@@ -130,6 +130,8 @@ sub run {
         my @skipped;
         foreach my $command (@commands) {
             my @skipped_for_command = $whitelist->list_skipped_tests($ltp_env, $command);
+            record_info('DEBUG3', Dumper(@skipped_for_command));
+            record_info('DEBUG3', Dumper(@skipped));
             push @skipped, @skipped_for_command;
         }
         if (@skipped) {
@@ -143,6 +145,7 @@ sub run {
     } else {
         record_info("Exclude", "None");
     }
+    die();
 
     my $kirk_repo = get_var("LTP_RUN_NG_REPO", "https://github.com/linux-test-project/kirk.git");
     my $kirk_branch = get_var("LTP_RUN_NG_BRANCH", "master");
