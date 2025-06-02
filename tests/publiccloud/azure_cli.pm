@@ -21,6 +21,7 @@ use registration qw(add_suseconnect_product get_addon_fullname);
 sub run {
     my ($self, $args) = @_;
     select_serial_terminal;
+    die;
     my $job_id = get_current_job_id();
 
     # If 'az' is preinstalled, we test that version
@@ -64,6 +65,15 @@ sub run {
     my $ip_address = script_output("az vm list-ip-addresses -g $resource_group -n $machine_name --query '[].virtualMachine.network.publicIpAddresses[0].ipAddress' --output tsv", 90);
     script_retry("ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no azureuser\@$ip_address hostnamectl", 90, delay => 15, retry => 12);
 }
+
+sub post_run_hook {
+    record_info('!');
+}
+
+sub post_fail_hook {
+    record_info('!');
+}
+
 
 sub cleanup {
     my $job_id = get_current_job_id();
