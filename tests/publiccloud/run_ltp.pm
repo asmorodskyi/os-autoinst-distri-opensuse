@@ -125,7 +125,7 @@ sub run {
         $instance->run_ssh_command(cmd => "sudo transactional-update -n pkg install $ltp_pkg", timeout => 900);
         $instance->softreboot();
     } else {
-        $instance->run_ssh_command(cmd => "sudo zypper -n in $ltp_pkg", timeout => 600);
+        $instance->run_ssh_command(cmd => "sudo zypper -n in $ltp_pkg", timeout => 1200);
     }
     my $ltp_env = gen_ltp_env($instance, $ltp_pkg);
     $self->{ltp_env} = $ltp_env;
