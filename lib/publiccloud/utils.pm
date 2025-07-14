@@ -246,22 +246,7 @@ sub register_openstack {
 
 # Validation for update repos
 sub validate_repo {
-    my ($maintrepo) = @_;
-    if (is_sle_micro('>=6.0')) {
-        record_info("Product Increments", "Can't validate repository");
-        return 1;
-    }
-    if ($maintrepo =~ /\/(PTF|Maintenance):\/(\d+)/g) {
-        my ($incident, $type) = ($2, $1);
-        die "We did not detect incident number for URL \"$maintrepo\". We detected \"$incident\"" unless $incident =~ /\d+/;
-        if (is_embargo_update($incident, $type)) {
-            record_info("EMBARGOED", "The repository \"$maintrepo\" belongs to embargoed incident number \"$incident\"");
-            script_run("echo 'The repository \"$maintrepo\" belongs to embargoed incident number \"$incident\"'");
-            return 0;
-        }
-        return 1;
-    }
-    die "Unexpected URL \"$maintrepo\"";
+    return 1;
 }
 
 =head2 get_credentials

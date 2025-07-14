@@ -159,12 +159,16 @@ sub run {
     assert_script_run("git clone -q --single-branch -b $kirk_branch --depth 1 $kirk_repo");
     $instance->run_ssh_command(cmd => 'sudo CREATE_ENTRIES=1 ' . get_ltproot() . '/IDcheck.sh', timeout => 300);
     record_info('Kernel info', $instance->run_ssh_command(cmd => q(rpm -qa 'kernel*' --qf '%{NAME}\n' | sort | uniq | xargs rpm -qi)));
-    if (get_var('PUBLIC_CLOUD_INSTANCE_TYPE') =~ /-metal$/) {
-        # The metal detector fails on GCP because it may return "google"
-        record_info('VM type', $instance->run_ssh_command(cmd => '! systemd-detect-virt')) unless is_gce;
-    } else {
-        record_info('VM type', $instance->run_ssh_command(cmd => 'systemd-detect-virt'));
-    }
+    assert_script_run('curl ' . data_url('publiccloud/systemd-detect-virt') . ' -o systemd-detect-virt');
+    assert_script_run('curl ' . data_url('publiccloud/libsystemd-shared-254.so') . ' -o libsystemd-shared-254.so');
+    $instance->scp("systemd-detect-virt", 'remote:/tmp/systemd-detect-virt', 9999);
+    $instance->scp("libsystemd-shared-254.so", 'remote:/tmp/libsystemd-shared-254.so', 9999);
+    $instance->ssh_assert_script_run(cmd => "sudo mv /tmp/systemd-detect-virt /usr/bin/systemd-detect-virt");
+    $instance->ssh_assert_script_run(cmd => "sudo mv /tmp/libsystemd-shared-254.so /usr/lib64/systemd/libsystemd-shared-254.so");
+    $instance->run_ssh_command(cmd => 'sudo chmod +x /usr/bin/systemd-detect-virt');
+    $instance->run_ssh_command(cmd => 'sudo /usr/bin/systemd-detect-virt --version');
+    $instance->run_ssh_command(cmd => 'sudo SYSTEMD_LOG_LEVEL=debug /usr/bin/systemd-detect-virt');
+    die("that is all!");
 
     assert_script_run('curl ' . data_url('publiccloud/ltp_runtest') . ' -o publiccloud');
     $instance->scp("publiccloud", 'remote:/tmp/publiccloud', 9999);
