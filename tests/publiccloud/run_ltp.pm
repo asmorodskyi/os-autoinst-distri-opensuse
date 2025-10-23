@@ -241,6 +241,7 @@ sub run {
     my $cmd_run_ltp = $self->prepare_ltp_cmd($instance, $provider, $reset_cmd, $ltp_command, $skip_tests, $env);
 
     $self->dump_kernel_config($instance);
+    die('ssssssss');
     record_info('LTP START', 'Command launch');
     script_run($cmd_run_ltp, timeout => get_var('LTP_TIMEOUT', 30 * 60));
     record_info('LTP END', 'tests done');
