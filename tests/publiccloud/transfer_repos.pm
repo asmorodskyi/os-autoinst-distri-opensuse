@@ -18,6 +18,7 @@ use version_utils qw(is_sle_micro);
 
 sub run {
     my ($self, $args) = @_;
+    sleep();
     select_host_console();    # select console on the host, not the PC instance
 
     my $instance = $args->{my_instance};
